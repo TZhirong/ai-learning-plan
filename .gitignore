@@ -19,6 +19,8 @@ dist/
 *.db
 *.sqlite
 *.sqlite3
+# 种子数据（含测试数据），随仓库一起分发
+!learning_plan.db
 
 # ===== 虚拟环境 =====
 venv/
