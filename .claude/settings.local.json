@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/envs/Anaconda/envs/py/**)",
+      "Bash(\"D:/envs/Anaconda/envs/py/python.exe\" --version)"
+    ]
+  }
+}

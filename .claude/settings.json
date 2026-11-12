@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"D:/envs/Anaconda/envs/py/python.exe\" -c \"import config, database, llm_client; database.init_db\\(\\); print\\('OK: 模块导入成功'\\); print\\('DB:', config.DB_PATH\\); print\\('stats:', database.get_stats\\(\\)\\)\")",
+      "Bash(PYTHONIOENCODING=utf-8 D:/envs/Anaconda/envs/py/python.exe -c ' *)"
+    ]
+  }
+}

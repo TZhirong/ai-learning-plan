@@ -1,0 +1,21 @@
+# Streamlit 智能学习计划定制系统 —— Python 依赖清单
+# 安装命令：pip install -r requirements.txt
+
+# Web 应用框架
+streamlit>=1.36.0
+
+# DeepSeek API 客户端（使用 OpenAI 兼容接口）
+openai>=1.40.0
+
+# 环境变量加载（读取 .env 文件）
+python-dotenv>=1.0.0
+
+# 知识库 RAG：向量检索与文档解析
+faiss-cpu>=1.8.0        # 向量检索
+pypdf>=4.0.0            # PDF 解析
+python-docx>=1.1.0      # Word 解析
+
+# 知识图谱可视化
+streamlit-echarts>=0.7.0
+
+# 说明：sqlite3 为 Python 标准库自带模块，无需通过 pip 单独安装

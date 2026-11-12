@@ -1,0 +1,37 @@
+# ===== 环境变量（含密钥，严禁提交） =====
+.env
+.env.exp
+.env.local
+
+# ===== Python 缓存 =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# ===== Streamlit 本地配置与缓存 =====
+.streamlit/
+
+# ===== 本地数据库文件 =====
+*.db
+*.sqlite
+*.sqlite3
+
+# ===== 虚拟环境 =====
+venv/
+.venv/
+env/
+ENV/
+
+# ===== IDE / 编辑器 =====
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===== 系统文件 =====
+.DS_Store
+Thumbs.db
