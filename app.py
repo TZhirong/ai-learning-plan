@@ -52,6 +52,7 @@ from knowledge_base import (
 )
 from knowledge_graph import WEEK_COLORS, build_graph
 from streamlit_echarts import JsCode, st_echarts
+from browser_storage import get_saved_key, remove_saved_key, set_saved_key
 
 # 表单选项常量
 LEVEL_OPTIONS = ["零基础", "了解入门概念", "有一定实践经验", "有系统学习经历"]
@@ -161,10 +162,52 @@ def _inject_css():
     )
 
 
+def _sync_browser_key():
+    """首次成功读取浏览器中保存的 Key 后，回填到输入框并记录状态。"""
+    if st.session_state.get("ls_initialized"):
+        return
+    res = get_saved_key()
+    if res.get("loaded"):
+        saved = res.get("value")
+        st.session_state["browser_saved_key"] = saved
+        # 仅当用户尚未手动输入时才回填，避免覆盖当前输入
+        if saved and not st.session_state.get("manual_api_key"):
+            st.session_state["manual_api_key"] = saved
+        st.session_state["ls_initialized"] = True
+    else:
+        st.session_state.setdefault("browser_saved_key", None)
+
+
+def _render_browser_persistence_controls():
+    """渲染 API Key 的浏览器持久化控制：保存到浏览器 / 删除。"""
+    current = st.session_state.get("manual_api_key", "").strip()
+    saved = st.session_state.get("browser_saved_key")
+
+    if saved:
+        st.caption(f"💾 浏览器已保存 Key：`****{saved[-4:]}`")
+    else:
+        st.caption("💾 浏览器中暂无已保存的 Key")
+
+    c1, c2 = st.columns(2)
+    with c1:
+        if st.button("💾 保存到浏览器", disabled=not current, width="stretch"):
+            set_saved_key(current)
+            st.session_state["browser_saved_key"] = current
+            st.success("✅ 已保存到浏览器本地")
+    with c2:
+        if st.button("🗑️ 删除已保存", disabled=not saved, width="stretch"):
+            remove_saved_key()
+            st.session_state["browser_saved_key"] = None
+            st.success("✅ 已删除浏览器中保存的 Key")
+
+
 def render_sidebar():
     """渲染侧边栏：API 配置区、使用说明与状态提示。"""
     with st.sidebar:
         st.markdown("## ⚙️ 配置中心")
+
+        # 从浏览器本地读取已保存的 Key，并回填到输入框
+        _sync_browser_key()
 
         # 状态提示
         if get_effective_api_key():
@@ -179,10 +222,13 @@ def render_sidebar():
                 type="password",
                 key="manual_api_key",
                 placeholder="sk-...",
-                help="优先级高于 .env 中的 DEEPSEEK_API_KEY，仅本次会话有效。",
+                help="优先级高于 .env 中的 DEEPSEEK_API_KEY；点击下方「保存到浏览器」可持久化到本地。",
             )
             st.caption(f"接口地址：{DEEPSEEK_BASE_URL}")
             st.caption(f"模型：{DEEPSEEK_MODEL}")
+
+            # 浏览器持久化：保存 / 删除
+            _render_browser_persistence_controls()
 
         # 使用说明
         with st.expander("📖 使用说明", expanded=False):
@@ -196,7 +242,7 @@ def render_sidebar():
             )
 
         st.divider()
-        st.caption("💡 密钥仅保存在本次会话，不会写入本地。")
+        st.caption("💡 密钥默认仅本次会话有效；点击「保存到浏览器」后才会持久化到本地。")
 
 
 # ==================== 标签页 1：计划定制 ====================
